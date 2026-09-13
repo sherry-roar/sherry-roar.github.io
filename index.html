@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="description" content="默认北京五险一金的 Offer 等效薪资计算器，拆分税后薪酬、奖金、股权和工时，提供夯到拉点评。"><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Offer 等效薪资计算器</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1 class="title">Offer 等效薪资计算器<span class="version"> / BEIJING</span></h1>
+      <div class="sub">拆分月薪、奖金、签字费、股票、期权、五险一金、个税，再折算 855 等效收入</div>
+    </div>
+    <div class="sub">北京默认 · 本地计算 · MIT 开源</div>
+  </div>
+</header>
+
+<main>
+<div id="inputError" class="notice warn" role="alert" hidden></div>
+<div class="grid">
+<section class="card">
+<div class="hd">1. Offer 收入构成</div>
+<div class="bd">
+
+  <div class="st">固定薪资</div>
+  <div class="form">
+    <div class="field">
+      <label>月基本工资</label>
+      <div class="iu"><input id="monthlyBase" type="number" value="30000" min="0" step="1000"><span class="unit">元</span></div>
+    </div>
+    <div class="field">
+      <label>发薪月数 <span class="hint">12 / 13 / 14 / 15 / 16 薪</span></label>
+      <div class="iu"><input id="salaryMonths" type="number" value="15" min="0" step="0.5"><span class="unit">月</span></div>
+    </div>
+    <div class="field">
+      <label>月固定现金补贴</label>
+      <div class="iu"><input id="monthlyAllowance" type="number" value="0" min="0" step="500"><span class="unit">元</span></div>
+    </div>
+    <div class="field">
+      <label>补贴发放月数</label>
+      <div class="iu"><input id="allowanceMonths" type="number" value="12" min="0" step="1"><span class="unit">月</span></div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+  <div class="st">一次性 / 浮动 / 权益收入</div>
+  <div class="income-wrap">
+  <table class="income-table">
+    <thead>
+      <tr><th>项目</th><th>本年金额（元）</th><th>Offer价值折算</th><th>税务处理</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>年终奖 / 绩效奖金</b><div class="small">不含已计入发薪月数的固定多薪</div></td>
+        <td><input class="money" id="annualBonus" type="number" value="0" min="0" step="10000"></td>
+        <td><select class="factor" id="bonusFactor"><option value="1" selected>100%</option><option value=".8">80%</option><option value=".5">50%</option></select></td>
+        <td><select class="taxsel" id="bonusTax"><option value="separate" selected>全年一次性奖金单独计税</option><option value="comprehensive">并入综合所得</option></select></td>
+      </tr>
+      <tr>
+        <td><b>签字费 / Sign-on</b><div class="small">一次性收入，不代表以后每年都有</div></td>
+        <td><input class="money" id="signOn" type="number" value="0" min="0" step="10000"></td>
+        <td><select class="factor" id="signFactor"><option value="1" selected>100%</option><option value=".8">80%</option><option value=".5">50%</option></select></td>
+        <td><select class="taxsel" id="signTax"><option value="comprehensive" selected>并入综合所得</option><option value="none">本年不计税</option></select></td>
+      </tr>
+      <tr>
+        <td><b>股票 / RSU</b><div class="small">只填本年归属价值</div></td>
+        <td><input class="money" id="stock" type="number" value="0" min="0" step="10000"></td>
+        <td><select class="factor" id="stockFactor"><option value="1" selected>100%</option><option value=".9">90%</option><option value=".8">80%</option><option value=".5">50%</option></select></td>
+        <td><select class="taxsel" id="stockTax"><option value="equity" selected>符合条件股权激励单独计税</option><option value="comprehensive">并入综合所得</option><option value="none">本年不计税</option></select></td>
+      </tr>
+      <tr>
+        <td><b>期权 / Option</b><div class="small">建议填本年可实现价值</div></td>
+        <td><input class="money" id="option" type="number" value="0" min="0" step="10000"></td>
+        <td><select class="factor" id="optionFactor"><option value=".3" selected>30%</option><option value=".5">50%</option><option value=".8">80%</option><option value="1">100%</option></select></td>
+        <td><select class="taxsel" id="optionTax"><option value="equity" selected>符合条件股权激励单独计税</option><option value="comprehensive">并入综合所得</option><option value="none">未行权 / 本年不计税</option></select></td>
+      </tr>
+      <tr>
+        <td><b>其他现金收入</b><div class="small">留任奖、项目奖、额外补贴等</div></td>
+        <td><input class="money" id="otherCash" type="number" value="0" min="0" step="10000"></td>
+        <td><select class="factor" id="otherFactor"><option value="1" selected>100%</option><option value=".8">80%</option><option value=".5">50%</option></select></td>
+        <td><select class="taxsel" id="otherTax"><option value="comprehensive" selected>并入综合所得</option><option value="none">本年不计税</option></select></td>
+      </tr>
+      <tr>
+        <td><b>非现金福利</b><div class="small">餐补、租房、商业险、体检等主观估值</div></td>
+        <td><input class="money" id="benefits" type="number" value="0" min="0" step="10000"></td>
+        <td><select class="factor" id="benefitFactor"><option value=".5" selected>50%</option><option value=".8">80%</option><option value="1">100%</option><option value="0">0%</option></select></td>
+        <td><span class="pill">默认不计现金个税</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="notice">股票、期权、福利的“价值折算”只用于 Offer 横向比较。个税仍按填写的名义金额和所选税务模式估算。</div>
+
+  <div class="div"></div>
+  <div class="st">2. 城市与五险一金</div>
+  <div class="form">
+    <div class="field">
+      <label>工作城市</label>
+      <select id="city">
+        <option value="beijing" selected>北京</option>
+        <option value="shanghai">上海</option>
+        <option value="shenzhen">深圳</option>
+        <option value="guangzhou">广州</option>
+        <option value="hangzhou">杭州</option>
+        <option value="chengdu">成都</option>
+        <option value="nanjing">南京</option>
+        <option value="wuhan">武汉</option>
+        <option value="custom">自定义</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>缴费基数模式</label>
+      <select id="baseMode">
+        <option value="salary" selected>按月基本工资估算（自动限额）</option>
+        <option value="custom">手动输入</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>社保月缴费基数</label>
+      <div class="iu"><input id="socialBase" type="number" value="30000" min="0" step="100"><span class="unit">元</span></div>
+    </div>
+    <div class="field">
+      <label>公积金月缴费基数</label>
+      <div class="iu"><input id="fundBase" type="number" value="30000" min="0" step="100"><span class="unit">元</span></div>
+    </div>
+  </div>
+
+  <div class="form3" style="margin-top:12px">
+    <div class="field"><label>养老个人比例</label><div class="iu"><input id="pensionRate" type="number" step=".1" value="8"><span class="unit">%</span></div></div>
+    <div class="field"><label>医疗个人比例</label><div class="iu"><input id="medicalRate" type="number" step=".1" value="2"><span class="unit">%</span></div></div>
+    <div class="field"><label>失业个人比例</label><div class="iu"><input id="unemploymentRate" type="number" step=".1" value=".5"><span class="unit">%</span></div></div>
+    <div class="field"><label>其他个人社保</label><div class="iu"><input id="otherSocialRate" type="number" step=".1" value="0"><span class="unit">%</span></div></div>
+    <div class="field"><label>公积金个人比例</label><div class="iu"><input id="fundRate" type="number" step=".5" value="12"><span class="unit">%</span></div></div>
+    <div class="field"><label>缴纳月数</label><div class="iu"><input id="contribMonths" type="number" step="1" value="12"><span class="unit">月</span></div></div>
+  </div>
+
+<details class="policy"><summary>查看 / 调整缴费上下限</summary><div class="form"><div class="field"><label for="socialMin">社保基数下限</label><input id="socialMin" type="number" value="7162" min="0" step="0.01"></div><div class="field"><label for="socialMax">社保基数上限</label><input id="socialMax" type="number" value="35811" min="0" step="0.01"></div><div class="field"><label for="fundMin">公积金基数下限</label><input id="fundMin" type="number" value="2540" min="0" step="0.01"></div><div class="field"><label for="fundMax">公积金基数上限</label><input id="fundMax" type="number" value="35811" min="0" step="0.01"></div><div class="field"><label for="medicalFixed">医疗个人固定费用 / 月</label><input id="medicalFixed" type="number" value="3" min="0" step="0.01"></div></div></details><p class="small" id="appliedBases"></p>
+  <div class="notice warn">不同城市的社保、公积金基数上下限与比例会调整，且公司可在允许范围内选择公积金比例。北京暂以 2025 年社保及 2025–2026 年度公积金历史参数估算，并非已核验的 2026 最新标准；个人养老 8%、医疗 2% + 3 元/月、失业 0.5%，工伤及生育个人不缴。公积金默认个人 12%（可改为公司约定比例），不计单位缴存额。实际基数通常以本人上年度月平均工资确定；可选择手动输入。其他城市仅提供比例示例，需自行设置上下限。</div>
+
+  <div class="div"></div>
+  <div class="st">3. 个税扣除</div>
+  <div class="form">
+    <div class="field">
+      <label>专项附加扣除 <span class="hint">全年合计</span></label>
+      <div class="iu"><input id="specialDeduction" type="number" value="0" min="0" step="1000"><span class="unit">元/年</span></div>
+    </div>
+    <div class="field">
+      <label>其他税前扣除</label>
+      <div class="iu"><input id="otherDeduction" type="number" value="0" min="0" step="1000"><span class="unit">元/年</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="card">
+<aside class="rating" aria-live="polite"><div class="rating-caption">这份 OFFER，什么水平？</div><div class="rating-line"><strong id="ratingLabel">计算中</strong><span>夯 → 顶级 → 人上人 → NPC → 拉完了</span></div><p id="ratingComment"></p><details><summary>怎么看这个评分？</summary><p>按等效税后时薪：≥200 元为夯；≥120 顶级；≥70 人上人；≥35 NPC；低于35 拉完了。仅为可解释的娱乐分档，不是市场薪资排名，也不评价个人能力。</p></details></aside>
+<div class="hd">结果：税前、税后、Offer价值</div>
+<div class="bd">
+  <div class="hero">
+    <div class="k">税后 + 价值折算后的 855 等效年收入</div>
+    <div class="v" id="eqAfterTax">¥ 0.0 万</div>
+    <div class="s">等效税后时薪 <b id="eqAfterHourly">¥ 0 / 小时</b></div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="k">名义税前总包</div><div class="v" id="nominalTC">0.0 万</div><div class="s">包含工资、奖金、签字费、股票、期权、福利</div></div>
+    <div class="metric"><div class="k">价值折算总包</div><div class="v" id="adjustedTC">0.0 万</div><div class="s">权益/福利按折算系数计算</div></div>
+    <div class="metric"><div class="k">预计个人所得税</div><div class="v bad" id="taxTotal">0.0 万</div><div class="s">综合所得 + 单独奖金 + 股权激励</div></div>
+    <div class="metric"><div class="k">个人五险一金</div><div class="v bad" id="socialTotal">0.0 万</div><div class="s">个人承担部分</div></div>
+    <div class="metric"><div class="k">预计税后现金/权益价值</div><div class="v good" id="afterTaxValue">0.0 万</div><div class="s">价值折算后扣除税与个人缴费</div></div>
+    <div class="metric"><div class="k">平均月税后价值</div><div class="v good" id="monthlyAfter">0 元</div><div class="s">年度税后价值 ÷ 12</div></div>
+  </div>
+
+  <div class="div"></div>
+  <div class="st">收入拆分</div>
+  <table class="summary-table">
+    <tbody>
+      <tr><td>固定工资</td><td id="sumSalary">0</td></tr>
+      <tr><td>固定补贴</td><td id="sumAllowance">0</td></tr>
+      <tr><td>年终奖</td><td id="sumBonus">0</td></tr>
+      <tr><td>签字费</td><td id="sumSign">0</td></tr>
+      <tr><td>股票 / RSU</td><td id="sumStock">0</td></tr>
+      <tr><td>期权</td><td id="sumOption">0</td></tr>
+      <tr><td>其他现金</td><td id="sumOther">0</td></tr>
+      <tr><td>非现金福利</td><td id="sumBenefits">0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="div"></div>
+  <div class="st">税费拆分</div>
+  <table class="summary-table">
+    <tbody>
+      <tr><td>综合所得个税</td><td id="taxComp">0</td></tr>
+      <tr><td>全年一次性奖金个税</td><td id="taxBonus">0</td></tr>
+      <tr><td>股权激励个税</td><td id="taxEquity">0</td></tr>
+      <tr><td>养老保险个人缴费</td><td id="pension">0</td></tr>
+      <tr><td>医疗保险个人缴费</td><td id="medical">0</td></tr>
+      <tr><td>失业保险个人缴费</td><td id="unemployment">0</td></tr>
+      <tr><td>其他个人社保</td><td id="otherSocial">0</td></tr>
+      <tr><td>住房公积金个人缴费</td><td id="fund">0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="div"></div>
+  <div class="st">4. 工时与 855 折算</div><p class="small">855 在此指每天 8 小时、每周 5 天；工作日超过 8 小时按 1.5 倍、周末按 2 倍加权，这是比较模型，不是加班工资核算。等效年薪 = 税后价值 × 成长系数 × 偏好系数 × 40 / 加权周工时；等效时薪 = 等效年薪 / 2080。</p>
+  <div class="form">
+    <div class="field"><label>工作日每天实际工时</label><div class="iu"><input id="weekdayHours" type="number" value="8" step=".5"><span class="unit">小时</span></div></div>
+    <div class="field"><label>每周工作日天数</label><div class="iu"><input id="weekdayDays" type="number" value="5" step=".5"><span class="unit">天</span></div></div>
+    <div class="field"><label>周末加班天数</label><div class="iu"><input id="weekendDays" type="number" value="0" step=".5"><span class="unit">天</span></div></div>
+    <div class="field"><label>周末每天工时</label><div class="iu"><input id="weekendHours" type="number" value="0" step=".5"><span class="unit">小时</span></div></div>
+    <div class="field"><label>发展前景系数</label>
+      <select id="growth"><option value="1.3">1.30 顶级成长</option><option value="1.15">1.15 良好成长</option><option value="1" selected>1.00 普通</option><option value=".9">0.90 较弱</option><option value=".8">0.80 消耗型</option></select>
+    </div>
+    <div class="field"><label>城市 / 生活偏好系数</label><div class="iu"><input id="locationFactor" type="number" value="1" step=".05"><span class="unit">×</span></div></div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="k">实际周工时</div><div class="v" id="actualWeekly">40.0 h</div></div>
+    <div class="metric"><div class="k">劳动倍率加权周工时</div><div class="v" id="weightedWeekly">40.0 h</div></div>
+    <div class="metric"><div class="k">税前 855 等效</div><div class="v" id="eqPretax">0.0 万</div></div>
+    <div class="metric"><div class="k">税后 855 等效</div><div class="v" id="eqAfterTax2">0.0 万</div></div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn" id="resetBtn">恢复默认示例</button>
+    <button class="btn primary" id="copyBtn">复制结果摘要</button>
+  </div>
+</div>
+</section>
+</div>
+
+<div class="split" style="margin-top:18px">
+<section class="card">
+<div class="hd">个税计算口径</div>
+<div class="bd">
+  <div class="notice">
+    综合所得按年度税率表估算，并扣除每年 60,000 元基本减除费用、个人承担五险一金、专项附加扣除与其他税前扣除。
+    全年一次性奖金可选择单独计税。符合政策条件的股权激励采用年度综合所得税率表单独估算；不符合条件请改为并入综合所得。全年一次性奖金单独计税政策现行延续至2027年底，一年仅可使用一次。签字费默认并入综合所得。
+  </div>
+  <table style="margin-top:12px">
+    <thead><tr><th>全年应纳税所得额</th><th>税率</th><th>速算扣除</th></tr></thead>
+    <tbody>
+      <tr><td>≤ 36,000</td><td>3%</td><td>0</td></tr>
+      <tr><td>36,000–144,000</td><td>10%</td><td>2,520</td></tr>
+      <tr><td>144,000–300,000</td><td>20%</td><td>16,920</td></tr>
+      <tr><td>300,000–420,000</td><td>25%</td><td>31,920</td></tr>
+      <tr><td>420,000–660,000</td><td>30%</td><td>52,920</td></tr>
+      <tr><td>660,000–960,000</td><td>35%</td><td>85,920</td></tr>
+      <tr><td>&gt; 960,000</td><td>45%</td><td>181,920</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<section class="card">
+<div class="hd">城市个人缴费快速预设</div>
+<div class="bd">
+  <table>
+    <thead><tr><th>城市</th><th>养老</th><th>医疗</th><th>失业</th><th>公积金默认</th></tr></thead>
+    <tbody>
+      <tr><td>北京</td><td>8%</td><td>2%</td><td>0.5%</td><td>12%</td></tr>
+      <tr><td>上海</td><td>8%</td><td>2%</td><td>0.5%</td><td>7%</td></tr>
+      <tr><td>深圳</td><td>8%</td><td>2%</td><td>0.2%</td><td>5%</td></tr>
+      <tr><td>广州</td><td>8%</td><td>2%</td><td>0.2%</td><td>5%</td></tr>
+      <tr><td>杭州</td><td>8%</td><td>2%</td><td>0.5%</td><td>12%</td></tr>
+      <tr><td>成都</td><td>8%</td><td>2%</td><td>0.4%</td><td>6%</td></tr>
+      <tr><td>南京</td><td>8%</td><td>2%</td><td>0.5%</td><td>8%</td></tr>
+      <tr><td>武汉</td><td>8%</td><td>2%</td><td>0.3%</td><td>8%</td></tr>
+    </tbody>
+  </table>
+  <div class="notice warn">用于 Offer 快速比较。实际工资核算还需要当年当地基数上下限、公司公积金比例和具体社保政策。</div>
+</div>
+</section>
+</div>
+<footer class="page-footer">所有输入只在当前浏览器计算，不上传、不保存。金额为年度估算，权益价值不等于当期可用现金。<br><a href="https://github.com/sherry-roar/sherry-roar.github.io">查看开源代码 ↗</a> · MIT License</footer></main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
