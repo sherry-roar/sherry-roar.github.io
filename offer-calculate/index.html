@@ -18,6 +18,7 @@
 <main>
 <div id="inputError" class="notice warn" role="alert" hidden></div>
 <div class="grid">
+<div class="column">
 <section class="card">
 <div class="hd">1. Offer 收入构成</div>
 <div class="bd">
@@ -152,8 +153,30 @@
   </div>
 </div>
 </section>
-
 <section class="card">
+<div class="hd">个税计算口径</div>
+<div class="bd">
+  <div class="notice">
+    综合所得按年度税率表估算，并扣除每年 60,000 元基本减除费用、个人承担五险一金、专项附加扣除与其他税前扣除。
+    全年一次性奖金可选择单独计税。符合政策条件的股权激励采用年度综合所得税率表单独估算；不符合条件请改为并入综合所得。全年一次性奖金单独计税政策现行延续至2027年底，一年仅可使用一次。签字费默认并入综合所得。
+  </div>
+  <table style="margin-top:12px">
+    <thead><tr><th>全年应纳税所得额</th><th>税率</th><th>速算扣除</th></tr></thead>
+    <tbody>
+      <tr><td>≤ 36,000</td><td>3%</td><td>0</td></tr>
+      <tr><td>36,000–144,000</td><td>10%</td><td>2,520</td></tr>
+      <tr><td>144,000–300,000</td><td>20%</td><td>16,920</td></tr>
+      <tr><td>300,000–420,000</td><td>25%</td><td>31,920</td></tr>
+      <tr><td>420,000–660,000</td><td>30%</td><td>52,920</td></tr>
+      <tr><td>660,000–960,000</td><td>35%</td><td>85,920</td></tr>
+      <tr><td>&gt; 960,000</td><td>45%</td><td>181,920</td></tr>
+    </tbody>
+  </table>
+</div>
+</section>
+</div>
+<div class="column">
+<section class="card result-card">
 <aside class="rating" aria-live="polite"><div class="rating-caption">这份 OFFER，什么水平？</div><div class="rating-line"><strong id="ratingLabel">计算中</strong><span>夯 → 顶级 → 人上人 → NPC → 拉完了</span></div><p id="ratingComment"></p><details><summary>怎么看这个评分？</summary><p>按等效税后时薪：≥200 元为夯；≥120 顶级；≥70 人上人；≥35 NPC；低于35 拉完了。仅为可解释的娱乐分档，不是市场薪资排名，也不评价个人能力。</p></details></aside>
 <div class="hd">结果：税前、税后、Offer价值</div>
 <div class="bd">
@@ -228,31 +251,6 @@
   </div>
 </div>
 </section>
-</div>
-
-<div class="split" style="margin-top:18px">
-<section class="card">
-<div class="hd">个税计算口径</div>
-<div class="bd">
-  <div class="notice">
-    综合所得按年度税率表估算，并扣除每年 60,000 元基本减除费用、个人承担五险一金、专项附加扣除与其他税前扣除。
-    全年一次性奖金可选择单独计税。符合政策条件的股权激励采用年度综合所得税率表单独估算；不符合条件请改为并入综合所得。全年一次性奖金单独计税政策现行延续至2027年底，一年仅可使用一次。签字费默认并入综合所得。
-  </div>
-  <table style="margin-top:12px">
-    <thead><tr><th>全年应纳税所得额</th><th>税率</th><th>速算扣除</th></tr></thead>
-    <tbody>
-      <tr><td>≤ 36,000</td><td>3%</td><td>0</td></tr>
-      <tr><td>36,000–144,000</td><td>10%</td><td>2,520</td></tr>
-      <tr><td>144,000–300,000</td><td>20%</td><td>16,920</td></tr>
-      <tr><td>300,000–420,000</td><td>25%</td><td>31,920</td></tr>
-      <tr><td>420,000–660,000</td><td>30%</td><td>52,920</td></tr>
-      <tr><td>660,000–960,000</td><td>35%</td><td>85,920</td></tr>
-      <tr><td>&gt; 960,000</td><td>45%</td><td>181,920</td></tr>
-    </tbody>
-  </table>
-</div>
-</section>
-
 <section class="card">
 <div class="hd">城市个人缴费快速预设</div>
 <div class="bd">
@@ -272,6 +270,7 @@
   <div class="notice warn">用于 Offer 快速比较。实际工资核算还需要当年当地基数上下限、公司公积金比例和具体社保政策。</div>
 </div>
 </section>
+</div>
 </div>
 <footer class="page-footer">所有输入只在当前浏览器计算，不上传、不保存。金额为年度估算，权益价值不等于当期可用现金。<br><a href="https://github.com/sherry-roar/sherry-roar.github.io">查看开源代码 ↗</a> · MIT License</footer></main>
 
