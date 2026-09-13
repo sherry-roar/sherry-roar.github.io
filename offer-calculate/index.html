@@ -13,7 +13,7 @@
       <h1 class="title">Offer 等效薪资计算器<span class="version"> / BEIJING</span></h1>
       <div class="sub">拆分月薪、奖金、签字费、股票、期权、五险一金、个税，再折算 855 等效收入</div>
     </div>
-    <div class="sub">北京默认 · 本地计算 · MIT 开源</div>
+    <div class="sub">网络示例：字节 Seed 人才包<br>95k × 15 薪 + 本年归属 60 万 RSU + 40 万签字费<br>北京默认 · 本地计算 · MIT 开源</div>
   </div>
 </header>
 
@@ -28,7 +28,7 @@
   <div class="form">
     <div class="field">
       <label>月基本工资</label>
-      <div class="iu"><input id="monthlyBase" type="number" value="30000" min="0" step="1000"><span class="unit">元</span></div>
+      <div class="iu"><input id="monthlyBase" type="number" value="95000" min="0" step="1000"><span class="unit">元</span></div>
     </div>
     <div class="field">
       <label>发薪月数 <span class="hint">12 / 13 / 14 / 15 / 16 薪</span></label>
@@ -60,13 +60,13 @@
       </tr>
       <tr>
         <td><b>签字费 / Sign-on</b><div class="small">一次性收入，不代表以后每年都有</div></td>
-        <td><input class="money" id="signOn" type="number" value="0" min="0" step="10000"></td>
+        <td><input class="money" id="signOn" type="number" value="400000" min="0" step="10000"></td>
         <td><select class="factor" id="signFactor"><option value="1" selected>100%</option><option value=".8">80%</option><option value=".5">50%</option></select></td>
         <td><select class="taxsel" id="signTax"><option value="comprehensive" selected>并入综合所得</option><option value="none">本年不计税</option></select></td>
       </tr>
       <tr>
         <td><b>股票 / RSU</b><div class="small">只填本年归属价值</div></td>
-        <td><input class="money" id="stock" type="number" value="0" min="0" step="10000"></td>
+        <td><input class="money" id="stock" type="number" value="600000" min="0" step="10000"></td>
         <td><select class="factor" id="stockFactor"><option value="1" selected>100%</option><option value=".9">90%</option><option value=".8">80%</option><option value=".5">50%</option></select></td>
         <td><select class="taxsel" id="stockTax"><option value="equity" selected>符合条件股权激励单独计税</option><option value="comprehensive">并入综合所得</option><option value="none">本年不计税</option></select></td>
       </tr>
@@ -224,7 +224,7 @@
   </div>
 
   <div class="footer-actions">
-    <button class="btn" id="resetBtn">恢复默认示例</button>
+    <button class="btn" id="resetBtn">恢复 Seed 示例</button>
     <button class="btn primary" id="copyBtn">复制结果摘要</button>
   </div>
 </div>
